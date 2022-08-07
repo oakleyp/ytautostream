@@ -3,6 +3,8 @@ package com.oakleyp.youtubeautostream.data.model;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.oakleyp.youtubeautostream.data.model.json.View;
 
+import java.util.List;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import lombok.*;
@@ -27,4 +29,7 @@ public class LiveStreamSource extends AuditableEntity {
     @JsonView(View.Summary.class)
     @NotEmpty
     private String format;
+
+    // @ManyToMany(mappedBy = "sources")
+    // private List<LiveStream> liveStreams;
 }

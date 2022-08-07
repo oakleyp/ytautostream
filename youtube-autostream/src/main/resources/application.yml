@@ -10,9 +10,9 @@ google:
 ffmpeg:
   bin:
     ffmpeg:
-      path: ""
+      path: "/usr/bin/ffmpeg"
     ffprobe:
-      path: ""
+      path: "/usr/bin/ffprobe"
 
 server:
   port:
@@ -51,7 +51,7 @@ spring:
     show_sql: false
     generate-ddl: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
       naming-strategy: org.hibernate.cfg.EJB3NamingStrategy
     properties:
       hibernate.cache.use_second_level_cache: true
@@ -70,6 +70,7 @@ spring:
 
 logging:
   level:
+    # org.postgresql: DEBUG
     org.springframework.web: INFO
     org.springframework.security: DEBUG
     com.oakleyp: DEBUG

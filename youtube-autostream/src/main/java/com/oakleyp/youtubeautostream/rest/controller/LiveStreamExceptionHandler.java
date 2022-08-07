@@ -8,10 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+
+import com.oakleyp.youtubeautostream.service.youtube.LiveStreamNotFoundException;
+
 import static org.springframework.http.ResponseEntity.*;
-
-
-import com.oakleyp.youtubeautostream.rest.service.LiveStreamNotFoundException;
 
 @RestControllerAdvice
 public class LiveStreamExceptionHandler {

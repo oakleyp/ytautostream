@@ -1,0 +1,3 @@
+[submodule "ffplayout"]
+	path = ffplayout
+	url = https://github.com/oakleyp/ffplayout.git

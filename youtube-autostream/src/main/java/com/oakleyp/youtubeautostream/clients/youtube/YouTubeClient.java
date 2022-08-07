@@ -19,7 +19,9 @@ import java.util.Optional;
 import java.io.InputStream;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class YouTubeClient {
 
     @Value("${google.app.name}")

@@ -23,7 +23,8 @@ public class LiveStream extends AuditableEntity {
     @NotEmpty
     private String name;
 
-    @ManyToMany
+    @ElementCollection
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "streams_sources",
         joinColumns = @JoinColumn(name = "stream_id", referencedColumnName = "id"),
@@ -33,7 +34,7 @@ public class LiveStream extends AuditableEntity {
     private List<LiveStreamSource> sources;
 
     @JsonView(View.Summary.class)
-    private String desc;
+    private String description;
     @JsonView(View.Summary.class)
     private Boolean enabled;
 
@@ -45,5 +46,10 @@ public class LiveStream extends AuditableEntity {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     @JsonView(View.Summary.class)
-    private LiveStreamStatus status = LiveStreamStatus.STOPPED;
+    private LiveStreamStatus liveStreamStatus = LiveStreamStatus.STOPPED;
+
+    @OneToOne
+    @JoinColumn(name = "ffmpeg_settings_id")
+    @JsonView(View.Summary.class)
+    private FFmpegSettings ffmpegSettings;
 }

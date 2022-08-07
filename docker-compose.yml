@@ -106,8 +106,8 @@ services:
         - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-https.tls.certresolver=le
         - traefik.http.services.${STACK_NAME?Variable not set}-pgadmin.loadbalancer.server.port=5050
 
-  rtmp_server:
-    image: ${DOCKER_IMAGE_RTMP_SERVER?Variable not set}:${TAG-latest}'
+  rtmp-server:
+    image: '${DOCKER_IMAGE_RTMP_SERVER?Variable not set}:${TAG-latest}'
     build:
       context: ./nginx-rtmp
     labels:
@@ -116,14 +116,15 @@ services:
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=PathPrefix(`/stream`)
       - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=1935
 
-  ytautostream_backend:
+  ytautostream-backend:
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
     depends_on:
-      - rtmp_server
+      - rtmp-server
       - db
     env_file:
       - .env
     environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/app
       - SERVER_NAME=${DOMAIN?Variable not set}
       - SERVER_HOST=https://${DOMAIN?Variable not set}
       # Allow explicit env var override for tests
@@ -142,6 +143,8 @@ services:
         - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
         - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`)
         - traefik.http.services.${STACK_NAME?Variable not set}-backend-http.loadbalancer.server.port=80
+    volumes:
+      - ./vid_sample:/app/vidsource
 
 
 volumes:

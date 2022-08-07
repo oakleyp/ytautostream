@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oakleyp.youtubeautostream.service.youtube.LiveStreamNotFoundException;
 import com.oakleyp.youtubeautostream.service.youtube.LiveStreamService;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.oakleyp.youtubeautostream.data.model.LiveStream;
@@ -20,10 +21,10 @@ import com.oakleyp.youtubeautostream.data.model.LiveStreamStatus;
 import com.oakleyp.youtubeautostream.data.model.json.View;
 import com.oakleyp.youtubeautostream.data.repository.LiveStreamRepository;
 import com.oakleyp.youtubeautostream.data.repository.LiveStreamSpecifications;
-import com.oakleyp.youtubeautostream.rest.service.LiveStreamNotFoundException;
 
 import static org.springframework.http.ResponseEntity.*;
 
+import javax.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,15 +38,19 @@ public class LiveStreams {
     private final LiveStreamRepository liveStreamRepository;
 
     @GetMapping("")
-    @JsonView(View.class)
+    @JsonView(View.Summary.class)
     public ResponseEntity<Page<LiveStream>> getAllLiveStreams(
         @RequestParam(value = "q", required = false) String keyword,
         @RequestParam(value = "status", required = false) LiveStreamStatus status,
         @PageableDefault(page = 0, size = 10, sort = "createdDT", direction = Direction.DESC) Pageable page) {
-            Page<LiveStream> liveStreams = liveStreamRepository.findAll(LiveStreamSpecifications.filterByKeywordAndStatus(keyword, status), page);
+            Page<LiveStream> liveStreams = liveStreamService.getPagedLiveStreams(keyword, status, page);
 
             return ok(liveStreams);
         }
+
+    // @PostMapping
+    // @JsonView(View.Public.class)
+    // public ResponseEntity<LiveStream> createLiveStream()
 
     @PostMapping(value = "/publish/{id}")
     public ResponseEntity<LiveStream> publishLiveStream(@PathVariable("id") String id) {
@@ -60,6 +65,8 @@ public class LiveStreams {
         LiveStream liveStream = liveStreamRepository.findById(idl).orElseThrow(
             () -> new LiveStreamNotFoundException(idl)
         );
+    
+        liveStream = liveStreamService.publishLiveStream(idl);
 
         return ok(liveStream);
     }

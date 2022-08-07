@@ -35,7 +35,7 @@ services:
     ports:
       - "5050:5050"
 
-  rtmp_server:
+  rtmp-server:
     ports:
       - "8085:8085"
       - "1935:1935"
@@ -45,11 +45,12 @@ services:
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=PathPrefix(`/stream`)
       - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=1935
 
-  ytautostream_backend:
+  ytautostream-backend:
     ports:
       - "8082:8082"
     environment:
       - SERVER_HOST=http://${DOMAIN?Variable not set}
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/app
     labels:
       - traefik.enable=true
       - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
